@@ -80,18 +80,20 @@ fi
 
 echo_color $BLUE 'Fetching source code'
 
-repo_url="https://github.com/DevCycleHQ-Labs/example-$TEMPLATE_KEY/archive/refs/heads/main.zip"
-folder_name="example-$TEMPLATE_KEY-main"
+BRANCH="main"
+repo_url="https://github.com/DevCycleHQ-Labs/example-$TEMPLATE_KEY/archive/refs/heads/$BRANCH.zip"
+folder_name="example-$TEMPLATE_KEY-$BRANCH"
+target_zip="$BRANCH.zip"
 
 # Download the zipped contents of the repository
-curl "$repo_url" --location --output main.zip
+curl "$repo_url" --location --output $target_zip &> /dev/null
 
 # Unzip the downloaded file
-unzip main.zip
+unzip $target_zip &> /dev/null
 mv $folder_name $OUTPUT_DIR
 
 # Remove the downloaded zip file
-rm main.zip
+rm $target_zip
 
 # Change directory to the output directory
 cd $OUTPUT_DIR
@@ -113,7 +115,14 @@ echo_color $BLUE 'Installing dependencies'
 
 # Install dependencies conditionally based on the template
 if [ "$TEMPLATE_KEY" = "python" ]; then
-  pip install -r requirements.txt
+  if ! command -v python3 &> /dev/null
+  then
+    echo_color $YELLOW "'python3' could not be found in path. Exiting..."
+    exit 1
+  fi
+
+  python3 -m pip install -r requirements.txt &> /dev/null
+  python3 manage.py migrate &> /dev/null
 else
   npm install
 fi
@@ -151,6 +160,15 @@ print_dev_instructions() {
 
 # Log dev instructions on exit
 trap 'print_dev_instructions' INT
+
+# Open browser if necessary
+if [ "$TEMPLATE_KEY" = "python" ]; then
+  PORT=8000
+fi
+
+if [ -n "$PORT" ]; then
+  open "http://localhost:$PORT"
+fi
 
 # Start dev server
 eval "$dev_command"
