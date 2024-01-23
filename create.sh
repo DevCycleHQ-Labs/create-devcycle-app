@@ -121,13 +121,18 @@ if [ "$TEMPLATE_KEY" = "python" ]; then
     exit 1
   fi
 
-  python3 -m pip install -r requirements.txt &> /dev/null
-  python3 manage.py migrate &> /dev/null
+  install_command="python3 -m pip install --user -r requirements.txt && python3 manage.py migrate"
 else
-  npm install
+  install_command="npm install"
 fi
 
-echo -e "\n${GREEN}Success!${NC} Project created in $OUTPUT_DIR\n"
+if eval "$install_command"
+then
+  echo -e "\n${GREEN}Success!${NC} Project created in $OUTPUT_DIR\n"
+else
+  echo_color $YELLOW "Failed to install dependencies. See the README for setup instruction. Exiting..."
+  exit 1
+fi
 
 #####################################
 # Start dev server & log dev instructions
