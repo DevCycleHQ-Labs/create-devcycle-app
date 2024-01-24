@@ -1,5 +1,6 @@
 #!/bin/bash
 TEMPLATES=(
+  "go"
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
@@ -113,16 +114,23 @@ rm .env~
 
 echo_color $BLUE 'Installing dependencies'
 
-# Install dependencies conditionally based on the template
-if [ "$TEMPLATE_KEY" = "python" ]; then
-  if ! command -v python3 &> /dev/null
+check_for_command() {
+  if ! command -v $1 &> /dev/null
   then
-    echo_color $YELLOW "'python3' could not be found in path. Exiting..."
+    echo_color $YELLOW "'$1' could not be found in path. Exiting..."
     exit 1
   fi
+}
 
+# Install dependencies conditionally based on the template
+if [ "$TEMPLATE_KEY" = "python" ]; then
+  check_for_command "python3"
   install_command="python3 -m pip install --user -r requirements.txt && python3 manage.py migrate"
+elif [ "$TEMPLATE_KEY" = "go" ]; then
+  check_for_command "go"
+  install_command="go mod download"
 else
+  check_for_command "npm"
   install_command="npm install"
 fi
 
@@ -167,7 +175,7 @@ print_dev_instructions() {
 trap 'print_dev_instructions' INT
 
 # Open browser if necessary
-if [ "$TEMPLATE_KEY" = "python" ]; then
+if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ]; then
   PORT=8000
 fi
 
