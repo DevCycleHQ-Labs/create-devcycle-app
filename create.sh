@@ -1,14 +1,15 @@
 #!/bin/bash
 TEMPLATES=(
   "go"
+  "java"
+  "javascript"
+  "javascript-cdn"
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
+  "python"
   "react-typescript"
   "react-with-provider"
-  "javascript"
-  "javascript-cdn"
-  "python"
   "vue3"
 )
 
@@ -100,7 +101,7 @@ rm $target_zip
 cd $OUTPUT_DIR
 
 #####################################
-# Setup project & install dependencies
+# Setup env file
 #####################################
 
 echo_color $BLUE 'Generating .env file'
@@ -112,29 +113,53 @@ mv .env.sample .env
 sed -i~ "s/<YOUR_SDK_KEY>/$SDK_KEY/g" ".env"
 rm .env~
 
+#####################################
+# Install dependencies and validate requirements
+#####################################
+
 echo_color $BLUE 'Installing dependencies'
 
 check_for_command() {
   if ! command -v $1 &> /dev/null
   then
-    echo_color $YELLOW "'$1' could not be found in path. Exiting..."
+    echo_color $YELLOW "'$1' could not be found in PATH. Exiting..."
     exit 1
   fi
 }
 
-# Install dependencies conditionally based on the template
+#### Python ####
 if [ "$TEMPLATE_KEY" = "python" ]; then
   check_for_command "python3"
   install_command="python3 -m pip install --user -r requirements.txt && python3 manage.py migrate"
+#### Go ####
 elif [ "$TEMPLATE_KEY" = "go" ]; then
   check_for_command "go"
   install_command="go mod download"
+#### Java ####
+elif [ "$TEMPLATE_KEY" = "java" ]; then
+  if type -p java > /dev/null; then
+    _java=java
+  elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then   
+    _java="$JAVA_HOME/bin/java"
+  else
+    echo_color $YELLOW "Java could not be found in PATH. Exiting..."
+    exit 1
+  fi
+  
+  required_version="17"
+  version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
+  if [[ "$version" < "$required_version" ]]; then
+    echo_color $YELLOW "Java version must be >= $required_version, found $version. Exiting..."
+    exit 1
+  fi
+  skip_install=true
+#### JavaScript ####
 else
   check_for_command "npm"
   install_command="npm install"
 fi
 
-if eval "$install_command"
+if $skip_install || eval "$install_command"
 then
   echo -e "\n${GREEN}Success!${NC} Project created in $OUTPUT_DIR\n"
 else
@@ -177,6 +202,8 @@ trap 'print_dev_instructions' INT
 # Open browser if necessary
 if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ]; then
   PORT=8000
+elif [ "$TEMPLATE_KEY" == "java" ]; then
+  PORT=8080
 fi
 
 if [ -n "$PORT" ]; then
