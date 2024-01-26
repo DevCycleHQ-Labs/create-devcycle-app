@@ -147,8 +147,11 @@ elif [ "$TEMPLATE_KEY" = "java" ]; then
   fi
   
   required_version="17"
-  version=$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')
-  if [[ "$version" < "$required_version" ]]; then
+  # Parse java version from output
+  version="$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')"
+  # Get major version
+  version="${version%%.*}"
+  if [[ $version -lt $required_version ]]; then
     echo_color $YELLOW "Java version must be >= $required_version, found $version. Exiting..."
     exit 1
   fi
