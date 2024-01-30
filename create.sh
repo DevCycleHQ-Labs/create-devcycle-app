@@ -7,6 +7,7 @@ TEMPLATES=(
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
+  "php"
   "python"
   "react-typescript"
   "react-with-provider"
@@ -156,14 +157,26 @@ elif [ "$TEMPLATE_KEY" = "java" ]; then
     exit 1
   fi
   skip_install=true
+#### PHP ####
+elif [ "$TEMPLATE_KEY" = "php" ]; then
+  check_for_command "php"
+
+  if type -p composer > /dev/null; then
+    _composer=composer
+  else
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+    _composer="php composer.phar"
+  fi
+  install_command="$_composer install"
 #### JavaScript ####
 else
   check_for_command "npm"
   install_command="npm install"
 fi
 
-if $skip_install || eval "$install_command"
-then
+if [ $skip_install ] || eval "$install_command"; then
   echo -e "\n${GREEN}Success!${NC} Project created in $OUTPUT_DIR\n"
 else
   echo_color $YELLOW "Failed to install dependencies. See the README for setup instruction. Exiting..."
@@ -205,7 +218,7 @@ trap 'print_dev_instructions' INT
 # Open browser if necessary
 if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ]; then
   PORT=8000
-elif [ "$TEMPLATE_KEY" == "java" ]; then
+elif [ "$TEMPLATE_KEY" == "java" ] || [ "$TEMPLATE_KEY" == "php" ]; then
   PORT=8080
 fi
 
