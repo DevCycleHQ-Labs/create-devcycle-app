@@ -160,7 +160,7 @@ elif [ "$TEMPLATE_KEY" = "java" ]; then
   fi
   skip_install=true
 #### PHP ####
-elif [ "$TEMPLATE_KEY" = "php" ]; then
+elif [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" == "php-leaf" ]]; then
   check_for_command "php"
 
   if type -p composer > /dev/null; then
@@ -171,6 +171,7 @@ elif [ "$TEMPLATE_KEY" = "php" ]; then
     php -r "unlink('composer-setup.php');"
     _composer="php composer.phar"
   fi
+  
   install_command="$_composer install"
 
 #### PHP LARAVEL ####
@@ -187,22 +188,6 @@ elif [ "$TEMPLATE_KEY" = "php-laravel" ]; then
   fi
   
   install_command="$_composer install && php artisan key:generate"
-
-#### PHP LEAF ####
-elif [ "$TEMPLATE_KEY" = "php-leaf" ]; then
-  check_for_command "php"
-
-  if type -p composer > /dev/null; then
-    _composer=composer
-  else
-    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    php composer-setup.php
-    php -r "unlink('composer-setup.php');"
-    _composer="php composer.phar"
-  fi
-  
-  install_command="$_composer install"
-
 
 #### JavaScript ####
 else
