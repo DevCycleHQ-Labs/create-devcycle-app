@@ -11,6 +11,7 @@ TEMPLATES=(
   "python"
   "react-typescript"
   "react-with-provider"
+  "ruby"
   "vue3"
 )
 
@@ -170,6 +171,10 @@ elif [ "$TEMPLATE_KEY" = "php" ]; then
     _composer="php composer.phar"
   fi
   install_command="$_composer install"
+#### Ruby ####
+elif [ "$TEMPLATE_KEY" = "ruby" ]; then
+  check_for_command "docker"
+  skip_install=true
 #### JavaScript ####
 else
   check_for_command "npm"
@@ -216,7 +221,7 @@ print_dev_instructions() {
 trap 'print_dev_instructions' INT
 
 # Open browser if necessary
-if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ]; then
+if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ] || [ "$TEMPLATE_KEY" == "ruby" ]; then
   PORT=8000
 elif [ "$TEMPLATE_KEY" == "java" ] || [ "$TEMPLATE_KEY" == "php" ]; then
   PORT=8080
