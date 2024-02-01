@@ -185,9 +185,6 @@ elif [ "$TEMPLATE_KEY" = "php-laravel" ]; then
     php -r "unlink('composer-setup.php');"
     _composer="php composer.phar"
   fi
-
-  # Generate application key
-  php artisan key:generate
   
   install_command="$_composer install && php artisan key:generate"
 
