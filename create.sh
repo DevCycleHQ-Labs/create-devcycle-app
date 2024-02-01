@@ -7,6 +7,7 @@ TEMPLATES=(
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
+  "openfeature-nodejs-typescript"
   "php"
   "python"
   "react-typescript"
@@ -141,13 +142,13 @@ elif [ "$TEMPLATE_KEY" = "go" ]; then
 elif [ "$TEMPLATE_KEY" = "java" ]; then
   if type -p java > /dev/null; then
     _java=java
-  elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then   
+  elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
   else
     echo_color $YELLOW "Java could not be found in PATH. Exiting..."
     exit 1
   fi
-  
+
   required_version="17"
   # Parse java version from output
   version="$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')"
@@ -212,7 +213,7 @@ print_dev_instructions() {
   echo -e "\n----------------------------------------"
   echo -e "How to run the development server: \n"
   echo_color $BLUE "cd $OUTPUT_DIR"
-  
+
   # Replace command with colored command
   echo -e "${dev_instructions/"\`$dev_command\`"/$BLUE$dev_command$NC}"
 }
