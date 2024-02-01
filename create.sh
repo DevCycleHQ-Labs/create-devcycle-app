@@ -11,6 +11,7 @@ TEMPLATES=(
   "php"
   "python"
   "react-typescript"
+  "openfeature-react-typescript"
   "react-with-provider"
   "ruby"
   "vue3"
