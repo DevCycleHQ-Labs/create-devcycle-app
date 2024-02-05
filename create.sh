@@ -7,6 +7,7 @@ TEMPLATES=(
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
+  "openfeature-nodejs-typescript"
   "php"
   "php-codeigniter"
   "php-laravel"
@@ -15,7 +16,9 @@ TEMPLATES=(
   "php-symfony"
   "python"
   "react-typescript"
+  "openfeature-react-typescript"
   "react-with-provider"
+  "ruby"
   "vue3"
 )
 
@@ -145,13 +148,13 @@ elif [ "$TEMPLATE_KEY" = "go" ]; then
 elif [ "$TEMPLATE_KEY" = "java" ]; then
   if type -p java > /dev/null; then
     _java=java
-  elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then   
+  elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
     _java="$JAVA_HOME/bin/java"
   else
     echo_color $YELLOW "Java could not be found in PATH. Exiting..."
     exit 1
   fi
-  
+
   required_version="17"
   # Parse java version from output
   version="$("$_java" -version 2>&1 | awk -F '"' '/version/ {print $2}')"
@@ -176,6 +179,11 @@ elif [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" =~ php-.* ]]; then
   fi
   
   install_command="$_composer install"
+
+#### Ruby ####
+elif [ "$TEMPLATE_KEY" = "ruby" ]; then
+  check_for_command "docker"
+  skip_install=true
 
 #### JavaScript ####
 else
@@ -214,7 +222,7 @@ print_dev_instructions() {
   echo -e "\n----------------------------------------"
   echo -e "How to run the development server: \n"
   echo_color $BLUE "cd $OUTPUT_DIR"
-  
+
   # Replace command with colored command
   echo -e "${dev_instructions/"\`$dev_command\`"/$BLUE$dev_command$NC}"
 }
@@ -223,7 +231,7 @@ print_dev_instructions() {
 trap 'print_dev_instructions' INT
 
 # Open browser if necessary
-if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ]; then
+if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ] || [ "$TEMPLATE_KEY" == "ruby" ]; then
   PORT=8000
 elif [ "$TEMPLATE_KEY" == "java" ] || [ "$TEMPLATE_KEY" == "php" ]; then
   PORT=8080
