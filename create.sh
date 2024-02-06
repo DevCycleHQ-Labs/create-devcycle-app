@@ -4,6 +4,7 @@ TEMPLATES=(
   "java"
   "javascript"
   "javascript-cdn"
+  "openfeature-javascript"
   "nextjs-app-router"
   "nodejs"
   "nodejs-typescript"
@@ -177,7 +178,7 @@ elif [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" =~ php-.* ]]; then
     php -r "unlink('composer-setup.php');"
     _composer="php composer.phar"
   fi
-  
+
   install_command="$_composer install"
 
 #### Ruby ####
