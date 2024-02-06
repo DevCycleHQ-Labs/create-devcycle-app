@@ -233,7 +233,7 @@ trap 'print_dev_instructions' INT
 # Open browser if necessary
 if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ] || [ "$TEMPLATE_KEY" == "ruby" ]; then
   PORT=8000
-elif [ "$TEMPLATE_KEY" == "java" ] || [ "$TEMPLATE_KEY" == "php" ]; then
+elif [[ "$TEMPLATE_KEY" == "java" ]] || [[ "$TEMPLATE_KEY" == "php" ]] || [[ "$TEMPLATE_KEY" == php-* ]]; then
   PORT=8080
 fi
 
