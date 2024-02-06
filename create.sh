@@ -1,5 +1,6 @@
 #!/bin/bash
 TEMPLATES=(
+  "dotnet"
   "go"
   "java"
   "javascript"
@@ -186,6 +187,11 @@ elif [ "$TEMPLATE_KEY" = "ruby" ]; then
   check_for_command "docker"
   skip_install=true
 
+#### .NET ####
+elif [ "$TEMPLATE_KEY" = "dotnet" ]; then
+  check_for_command "dotnet"
+  install_command="dotnet restore"
+
 #### JavaScript ####
 else
   check_for_command "npm"
@@ -232,7 +238,10 @@ print_dev_instructions() {
 trap 'print_dev_instructions' INT
 
 # Open browser if necessary
-if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ] || [ "$TEMPLATE_KEY" == "ruby" ]; then
+if [ "$TEMPLATE_KEY" == "python" ] ||
+  [ "$TEMPLATE_KEY" == "go" ] ||
+  [ "$TEMPLATE_KEY" == "ruby" ] ||
+  [ "$TEMPLATE_KEY" == "dotnet" ]; then
   PORT=8000
 elif [[ "$TEMPLATE_KEY" == "java" ]] || [[ "$TEMPLATE_KEY" == "php" ]] || [[ "$TEMPLATE_KEY" == php-* ]]; then
   PORT=8080
