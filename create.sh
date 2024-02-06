@@ -9,6 +9,11 @@ TEMPLATES=(
   "nodejs-typescript"
   "openfeature-nodejs-typescript"
   "php"
+  "php-codeigniter"
+  "php-laravel"
+  "php-leaf"
+  "php-slim"
+  "php-symfony"
   "python"
   "react-typescript"
   "openfeature-react-typescript"
@@ -160,8 +165,8 @@ elif [ "$TEMPLATE_KEY" = "java" ]; then
     exit 1
   fi
   skip_install=true
-#### PHP ####
-elif [ "$TEMPLATE_KEY" = "php" ]; then
+#### PHP Frameworks ####
+elif [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" =~ php-.* ]]; then
   check_for_command "php"
 
   if type -p composer > /dev/null; then
@@ -172,11 +177,14 @@ elif [ "$TEMPLATE_KEY" = "php" ]; then
     php -r "unlink('composer-setup.php');"
     _composer="php composer.phar"
   fi
+  
   install_command="$_composer install"
+
 #### Ruby ####
 elif [ "$TEMPLATE_KEY" = "ruby" ]; then
   check_for_command "docker"
   skip_install=true
+
 #### JavaScript ####
 else
   check_for_command "npm"
@@ -225,7 +233,7 @@ trap 'print_dev_instructions' INT
 # Open browser if necessary
 if [ "$TEMPLATE_KEY" == "python" ] || [ "$TEMPLATE_KEY" == "go" ] || [ "$TEMPLATE_KEY" == "ruby" ]; then
   PORT=8000
-elif [ "$TEMPLATE_KEY" == "java" ] || [ "$TEMPLATE_KEY" == "php" ]; then
+elif [[ "$TEMPLATE_KEY" == "java" ]] || [[ "$TEMPLATE_KEY" == "php" ]] || [[ "$TEMPLATE_KEY" == php-* ]]; then
   PORT=8080
 fi
 
