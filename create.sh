@@ -238,13 +238,14 @@ print_dev_instructions() {
 trap 'print_dev_instructions' INT
 
 # Open browser if necessary
-if [ "$TEMPLATE_KEY" == "python" ] ||
-  [ "$TEMPLATE_KEY" == "go" ] ||
-  [ "$TEMPLATE_KEY" == "ruby" ] ||
-  [ "$TEMPLATE_KEY" == "dotnet" ]; then
-  PORT=8000
-elif [[ "$TEMPLATE_KEY" == "java" ]] || [[ "$TEMPLATE_KEY" == "php" ]] || [[ "$TEMPLATE_KEY" == php-* ]]; then
-  PORT=8080
+if [[ "$TEMPLATE_KEY" == "python" ]] ||
+   [[ "$TEMPLATE_KEY" == "go" ]] ||
+   [[ "$TEMPLATE_KEY" == "ruby" ]] ||
+   [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" == php-* ]] ||
+   [[ "$TEMPLATE_KEY" == "dotnet" ]]; then
+    PORT=8000
+elif [[ "$TEMPLATE_KEY" == "java" ]]; then
+    PORT=8080
 fi
 
 if [ -n "$PORT" ]; then
