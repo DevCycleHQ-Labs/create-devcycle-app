@@ -8,6 +8,7 @@ TEMPLATES=(
   "openfeature-javascript"
   "nextjs-app-router"
   "nodejs"
+  "openfeature-nodejs"
   "nodejs-typescript"
   "openfeature-nodejs-typescript"
   "php"
