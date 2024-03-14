@@ -1,8 +1,11 @@
 #!/bin/bash
 TEMPLATES=(
   "dotnet"
+  "openfeature-dotnet"
   "go"
+  "openfeature-go"
   "java"
+  "openfeature-java"
   "javascript"
   "javascript-cdn"
   "openfeature-javascript"
@@ -142,11 +145,11 @@ if [ "$TEMPLATE_KEY" = "python" ]; then
   check_for_command "python3"
   install_command="python3 -m pip install --user -r requirements.txt && python3 manage.py migrate"
 #### Go ####
-elif [ "$TEMPLATE_KEY" = "go" ]; then
+elif [[ "$TEMPLATE_KEY" = "go" || "$TEMPLATE_KEY" = "openfeature-go" ]]; then
   check_for_command "go"
   install_command="go mod download"
 #### Java ####
-elif [ "$TEMPLATE_KEY" = "java" ]; then
+elif [[ "$TEMPLATE_KEY" = "java" || "$TEMPLATE_KEY" = "openfeature-java" ]]; then
   if type -p java > /dev/null; then
     _java=java
   elif [[ -n "$JAVA_HOME" ]] && [[ -x "$JAVA_HOME/bin/java" ]];  then
@@ -187,7 +190,7 @@ elif [ "$TEMPLATE_KEY" = "ruby" ]; then
   skip_install=true
 
 #### .NET ####
-elif [ "$TEMPLATE_KEY" = "dotnet" ]; then
+elif [[ "$TEMPLATE_KEY" = "dotnet" || "$TEMPLATE_KEY" = "openfeature-dotnet" ]]; then
   check_for_command "dotnet"
   install_command="dotnet restore"
 
@@ -238,12 +241,12 @@ trap 'print_dev_instructions' INT
 
 # Open browser if necessary
 if [[ "$TEMPLATE_KEY" == "python" ]] ||
-   [[ "$TEMPLATE_KEY" == "go" ]] ||
+   [[ "$TEMPLATE_KEY" == "go" || "$TEMPLATE_KEY" = "openfeature-go" ]] ||
    [[ "$TEMPLATE_KEY" == "ruby" ]] ||
    [[ "$TEMPLATE_KEY" == "php" || "$TEMPLATE_KEY" == php-* ]] ||
-   [[ "$TEMPLATE_KEY" == "dotnet" ]]; then
+   [[ "$TEMPLATE_KEY" == "dotnet" || "$TEMPLATE_KEY" = "openfeature-dotnet" ]]; then
     PORT=8000
-elif [[ "$TEMPLATE_KEY" == "java" ]]; then
+elif [[ "$TEMPLATE_KEY" == "java" || "$TEMPLATE_KEY" = "openfeature-java" ]]; then
     PORT=8080
 fi
 
